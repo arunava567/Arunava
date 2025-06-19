@@ -1,0 +1,24 @@
+ body {
+      background-image: url('medicine-blue-background-flat-lay-copy.jpg');
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+ h1 { color: #333; }
+    .buttons { margin: 20px; }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #result, #choices {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    #coins {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4caf50;
+    }

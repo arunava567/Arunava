@@ -1,0 +1,142 @@
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Noto Sans Bengali', sans-serif;
+    background-image: url('medicine-blue-background-flat-lay-copy.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    border-color: transparent;
+    margin-bottom: 200px;
+}
+
+h1 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    margin: 0;
+    padding: 10px 0;
+    font-size: 2.5rem;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+h2 {
+    color: white;
+    margin-top: 70px;
+    font-size: 1.5rem;
+    text-shadow: black;
+}
+h3 {
+    margin-bottom: 40px;
+}
+
+.plus-symbol {
+    font-size: 1.5rem;
+    color: white; /* Changed to white */
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+form {
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    color: white;
+    background-color: rgb(67, 141, 226);
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* h1 .plus-symbol {
+    font-size: 2.5rem;
+    color: white; /* Changed to white */
+    /* position: absolute;
+    animation: blink 1s infinite;
+} */
+/* h1 .plus-left {
+    left: -50px;
+    top:30px;
+}
+
+h1 .plus-right {
+    right: -45px;
+    top:30px; */
+/* } */
+
+input[type="text"], input[type="date"], input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 0 0 5px 5px;
+    background-color: #f8f8f8;
+}
+
+input[type="submit"] {
+    background-color: #05a4af;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+
+input[type="submit"]:hover {
+    background-color: #0a4c79;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.2rem;
+        top: 10px;
+    }
+
+    h2 {
+        font-size: 0.988rem;
+        margin-top: 52px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+}

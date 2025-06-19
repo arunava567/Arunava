@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stone Paper Pencil Scissor</title>
+
+<body>
+  <link rel="stylesheet" href="game.css">
+  <h1>Stone Paper Pencil Scissor</h1>
+  <div class="buttons">
+    <button onclick="play('stone')">Stone</button>
+    <button onclick="play('paper')">Paper</button>
+    <button onclick="play('pencil')">Pencil</button>
+    <button onclick="play('scissor')">Scissor</button>
+  </div>
+  <div id="choices"></div>
+  <div id="result"></div>
+  <div id="coins">Coins: 0</div>
+
+  <script>
+    const youdict = {stone: 1, paper: 2, pencil: 3, scissor: 4};
+    const reverseDict = {1: 'Stone', 2: 'Paper', 3: 'Pencil', 4: 'Scissor'};
+    let coins = 0;
+    const email = localStorage.getItem("userEmail");
+
+    async function updateCoins() {
+      await fetch('/update-coins', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, coins })
+      });
+    }
+
+    function play(userChoice) {
+      const user = youdict[userChoice];
+      const computer = Math.floor(Math.random() * 4) + 1;
+
+      document.getElementById("choices").innerText =
+        `You chose ${reverseDict[user]}. Computer chose ${reverseDict[computer]}.`;
+
+      let result = "";
+      if (user === computer) {
+        result = "It's a Draw";
+      } else if (
+        (computer === 1 && user === 2) || (computer === 3 && user === 1) ||
+        (computer === 4 && user === 1) || (computer === 2 && user === 4) ||
+        (computer === 2 && user === 3) || (computer === 4 && user === 3)
+      ) {
+        result = "You Win";
+        coins += 1;
+      } else {
+        result = "You Lose";
+        coins -= 1;
+      }
+
+      document.getElementById("result").innerText = result;
+      document.getElementById("coins").innerText = `Coins: ${coins}`;
+
+      const msg = new SpeechSynthesisUtterance(`You chose ${reverseDict[user]}, computer chose ${reverseDict[computer]}. ${result}`);
+      window.speechSynthesis.speak(msg);
+
+      updateCoins();
+    }
+  </script>
+</body>
+</html>

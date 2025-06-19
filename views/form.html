@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>Signup</h2>
+    <form method="POST" action="/submit" enctype="multipart/form-data" onsubmit="return handleImageUpload(event)">
+        <label for="name">Name:</label><br />
+        <input type="text" id="name" name="name" required /><br />
+
+        <label for="email">Email:</label><br />
+        <input type="email" id="email" name="email" required /><br />
+
+        <label for="password">Password:</label><br />
+        <input type="password" id="password" name="password" required /><br />
+
+        <label for="image">Upload Image:</label><br />
+        <input type="file" id="image" accept="image/*" required /><br />
+
+        <!-- Hidden input for image URL -->
+        <input type="hidden" name="imgUrl" id="imgUrl" />
+
+        <button type="submit" id="submitBtn">Submit</button>
+    </form>
+
+    <a href="/login">Already have an account? Login here</a>
+
+    <script>
+        async function handleImageUpload(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById('image');
+            const file = fileInput.files[0];
+            if (!file) return alert("ছবি নির্বাচন করুন।");
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const apiKey = "e3e5efef585f765316a9976dff6f7879"; // এখানেই তোমার imgbb এর API key বসাও
+            const url = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                document.getElementById('imgUrl').value = data.data.url;
+
+                // Submit the form
+                event.target.submit();
+            } catch (err) {
+                alert("ছবি আপলোড ব্যর্থ হয়েছে।");
+                console.error(err);
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>
