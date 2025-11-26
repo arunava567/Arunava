@@ -19,9 +19,10 @@ app.use(express.static(path.join(__dirname, "views")));
 
 // GOOGLE SHEETS AUTH
 const auth = new google.auth.GoogleAuth({
-    keyFile: path.join(__dirname, 'lofty-hall-427902-k4-230333cab27f.json'),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  keyFile: "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json",
+  scopes: "https://www.googleapis.com/auth/spreadsheets"
 });
+
 
 // Sheet IDs
 const signupSheetId = '1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA';
