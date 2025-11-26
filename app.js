@@ -94,12 +94,10 @@ app.post('/login', async (req, res) => {
             range: 'Sheet1!A:E',
         });
 
-        const rows = response.data.values;
-        if (!rows || rows.length === 0) {
-            return res.send('❌ কোনো ইউজার পাওয়া যায়নি।');
-        }
+        const rows = response.data.values || [];
 
-        const user = rows.find(r => r[1] === email && r[2] === password);
+        // SAFE USER FINDER
+        const user = rows.find(r => r[1] && r[2] && r[1] === email && r[2] === password);
 
         if (user) {
             res.send(`
@@ -117,7 +115,6 @@ app.post('/login', async (req, res) => {
         res.status(500).send('❌ সার্ভার ত্রুটি।');
     }
 });
-
 // ================= COINS UPDATE =================
 app.post('/update-coins', async (req, res) => {
     const { email, coins } = req.body;
@@ -133,7 +130,8 @@ app.post('/update-coins', async (req, res) => {
             range: 'Sheet1!A:E',
         });
 
-        const rows = getRes.data.values;
+        const rows = getRes.data.values || [];
+
         const rowIndex = rows.findIndex(r => r[1] === email);
 
         if (rowIndex === -1) {
@@ -145,7 +143,7 @@ app.post('/update-coins', async (req, res) => {
             range: `Sheet1!E${rowIndex + 1}`,
             valueInputOption: 'RAW',
             resource: {
-                values: [[coins.toString()]],
+                values: [[String(coins || 0)]],
             },
         });
 
@@ -155,7 +153,6 @@ app.post('/update-coins', async (req, res) => {
         res.status(500).send("❌ Server error");
     }
 });
-
 // ================= MEDICINE FORM =================
 app.post('/submit-med', upload.none(), async (req, res) => {
     const { name, address, medicine, date, phone, imgUrl } = req.body;
