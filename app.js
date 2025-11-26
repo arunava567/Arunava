@@ -5,14 +5,19 @@ const path = require('path');
 
 const app = express();
 const upload = multer();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); // Serve form.html, medform.html, etc.
 
-// Google Sheets API Auth Setup
+// Serve public folder (CSS, JS, Images)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve views folder HTML
+app.use(express.static(path.join(__dirname, "views")));
+
+// GOOGLE SHEETS AUTH
 const auth = new google.auth.GoogleAuth({
     keyFile: path.join(__dirname, 'lofty-hall-427902-k4-230333cab27f.json'),
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -22,18 +27,29 @@ const auth = new google.auth.GoogleAuth({
 const signupSheetId = '1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA';
 const medSheetId = '15AZqj6Fs2MO8VaTcmxRsjJi5Tgs8OpR0qPoiFKSo4Gc';
 
-// ROUTES
+// ================= ROUTES =================
 
-// Load Signup form
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'form.html')));
+// HOME PAGE (index.html)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 
-// Load Medicine form
-app.get('/medform', (req, res) => res.sendFile(path.join(__dirname, 'medform.html')));
+// LOGIN
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
 
-// Load Login page
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'login.html')));
+// MEDICAL FORM
+app.get('/medform', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'medform.html'));
+});
 
-// Handle Signup form submission
+// GAME PAGE
+app.get('/game.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'game.html'));
+});
+
+// ================= SIGNUP FORM =================
 app.post('/submit', upload.none(), async (req, res) => {
     const { name, email, password, imgUrl } = req.body;
 
@@ -50,7 +66,7 @@ app.post('/submit', upload.none(), async (req, res) => {
             range: 'Sheet1!A:E',
             valueInputOption: 'RAW',
             resource: {
-                values: [[name, email, password, imgUrl, '0']], // Initial coin = 0
+                values: [[name, email, password, imgUrl, '0']],
             },
         });
 
@@ -61,7 +77,7 @@ app.post('/submit', upload.none(), async (req, res) => {
     }
 });
 
-// Handle Login
+// ================= LOGIN =================
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -79,12 +95,11 @@ app.post('/login', async (req, res) => {
         });
 
         const rows = response.data.values;
-
         if (!rows || rows.length === 0) {
             return res.send('❌ কোনো ইউজার পাওয়া যায়নি।');
         }
 
-        const user = rows.find(row => row[1] === email && row[2] === password);
+        const user = rows.find(r => r[1] === email && r[2] === password);
 
         if (user) {
             res.send(`
@@ -99,11 +114,11 @@ app.post('/login', async (req, res) => {
         }
     } catch (error) {
         console.error('Login Error:', error);
-        res.status(500).send('❌ সার্ভার ত্রুটি। পরে চেষ্টা করুন।');
+        res.status(500).send('❌ সার্ভার ত্রুটি।');
     }
 });
 
-// Update Coins (from game)
+// ================= COINS UPDATE =================
 app.post('/update-coins', async (req, res) => {
     const { email, coins } = req.body;
 
@@ -119,17 +134,15 @@ app.post('/update-coins', async (req, res) => {
         });
 
         const rows = getRes.data.values;
-        const rowIndex = rows.findIndex(row => row[1] === email);
+        const rowIndex = rows.findIndex(r => r[1] === email);
 
         if (rowIndex === -1) {
             return res.status(404).send("❌ User not found");
         }
 
-        const updateRange = `Sheet1!E${rowIndex + 1}`;
-
         await sheets.spreadsheets.values.update({
             spreadsheetId: signupSheetId,
-            range: updateRange,
+            range: `Sheet1!E${rowIndex + 1}`,
             valueInputOption: 'RAW',
             resource: {
                 values: [[coins.toString()]],
@@ -143,7 +156,7 @@ app.post('/update-coins', async (req, res) => {
     }
 });
 
-// Handle Medicine Form
+// ================= MEDICINE FORM =================
 app.post('/submit-med', upload.none(), async (req, res) => {
     const { name, address, medicine, date, phone, imgUrl } = req.body;
 
@@ -171,7 +184,7 @@ app.post('/submit-med', upload.none(), async (req, res) => {
     }
 });
 
-// Start server
+// ============= START SERVER =============
 app.listen(port, () => {
-    console.log(`🚀 সার্ভার চলছে: http://localhost:${port}`);
+    console.log(`🚀 Server running on port ${port}`);
 });
