@@ -1,53 +1,24 @@
- body {
-      background-image: url('medicine-blue-background-flat-lay-copy.jpg');
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-    }
- h1 { color: #333; }
-    .buttons { margin: 20px; }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-    }
-    #result, #choices {
-      margin-top: 20px;
-      font-size: 22px;
-    }
-    #coins {
-      margin-top: 30px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #4caf50;
-    }
-#profile {
-  text-align: center;
-  margin-bottom: 20px;
-}
-#profilePic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 3px solid #333;
-}
+/* ===================== GLOBAL STYLE ===================== */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #f0f4ff, #dfe9ff);
+  background: linear-gradient(135deg, #e6f0ff, #d0e2ff);
   text-align: center;
-  padding: 20px;
+  padding: 25px;
   margin: 0;
 }
 
+/* ===================== HEADING ===================== */
 h1 {
-  color: #222;
-  font-size: 28px;
+  color: #1e1e2f;
+  font-size: 30px;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
   margin-bottom: 20px;
 }
 
+/* ===================== GAME BUTTONS ===================== */
 .buttons {
-  margin-bottom: 20px;
+  margin: 15px;
 }
 
 button {
@@ -57,42 +28,54 @@ button {
   background: #4a7eff;
   color: white;
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
 }
 
 button:hover {
   background: #2d5fe3;
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
+/* ===================== RESULT / CHOICE / COINS ===================== */
 #choices, #result, #coins {
-  font-size: 18px;
-  margin-top: 10px;
-  padding: 5px;
+  font-size: 20px;
+  margin-top: 12px;
+  padding: 8px;
+  font-weight: 600;
 }
 
+#coins {
+  margin-top: 20px;
+  color: #28a745;
+  font-size: 24px;
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ===================== PROFILE SECTION ===================== */
 #profile {
-  margin-top: 25px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 15px;
 }
 
 #profilePic {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;     /* 🔥 Makes it round */
-  object-fit: cover;       /* cropped-fit */
-  border: 4px solid white;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.25);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;          /* perfect circle */
+  object-fit: cover;           /* good crop fit */
+  border: 4px solid #fff;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
 }
 
 #playerName {
-  margin-top: 10px;
-  font-size: 20px;
+  margin-top: 12px;
+  font-size: 22px;
   color: #222;
-  font-weight: bold;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
 }
-
