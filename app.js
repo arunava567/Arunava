@@ -181,6 +181,39 @@ app.post('/submit-med', upload.none(), async (req, res) => {
         res.status(500).send("❌ ডেটা জমা ব্যর্থ হয়েছে।");
     }
 });
+// ================= GET USER DATA (IMG + COINS) =================
+app.post("/get-user", async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) return res.status(400).send("❌ Email required");
+
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: client });
+
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: signupSheetId,
+            range: "Sheet1!A:E",
+        });
+
+        const rows = response.data.values || [];
+        const user = rows.find(r => r[1] === email);
+
+        if (!user) return res.status(404).send("❌ User not found");
+
+        res.json({
+            name: user[0],
+            email: user[1],
+            imgUrl: user[3],
+            coins: user[4] || 0
+        });
+
+    } catch (err) {
+        console.error("User fetch error:", err);
+        res.status(500).send("❌ Server error");
+    }
+});
+
 
 // ============= START SERVER =============
 app.listen(port, () => {
