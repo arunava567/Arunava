@@ -66,6 +66,29 @@
 
       updateCoins();
     }
+    async function loadUser() {
+  if (!email) {
+    alert("❌ Not logged in!");
+    window.location.href = "/login";
+    return;
+  }
+
+  const res = await fetch("/get-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+
+  const data = await res.json();
+
+  document.getElementById("profilePic").src = data.imgUrl;
+  document.getElementById("playerName").innerText = data.name;
+  coins = parseInt(data.coins);
+  document.getElementById("coins").innerText = `Coins: ${coins}`;
+}
+
+loadUser();
+
   </script>
 </body>
 </html>
