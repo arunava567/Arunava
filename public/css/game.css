@@ -63,3 +63,19 @@ button:hover {
   font-size: 26px;
   margin-top: 15px;
 }
+#logoutBtn {
+  margin-top: 10px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#logoutBtn:hover {
+  background: #cc0000;
+}
+
