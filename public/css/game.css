@@ -1,81 +1,65 @@
-/* ===================== GLOBAL STYLE ===================== */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #e6f0ff, #d0e2ff);
-  text-align: center;
-  padding: 25px;
-  margin: 0;
-}
-
-/* ===================== HEADING ===================== */
-h1 {
-  color: #1e1e2f;
-  font-size: 30px;
-  font-weight: 700;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-  margin-bottom: 20px;
-}
-
-/* ===================== GAME BUTTONS ===================== */
-.buttons {
-  margin: 15px;
-}
-
-button {
-  padding: 12px 25px;
-  margin: 8px;
-  border: none;
-  background: #4a7eff;
+  background: linear-gradient(135deg, #2e2e2e, #444);
   color: white;
-  border-radius: 10px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+  margin: 0;
+  text-align: center;
 }
 
-button:hover {
-  background: #2d5fe3;
-  transform: scale(1.07);
-}
-
-/* ===================== RESULT / CHOICE / COINS ===================== */
-#choices, #result, #coins {
-  font-size: 20px;
-  margin-top: 12px;
-  padding: 8px;
-  font-weight: 600;
-}
-
-#coins {
+h1 {
   margin-top: 20px;
-  color: #28a745;
-  font-size: 24px;
-  text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+  font-size: 35px;
+  text-shadow: 2px 2px 5px black;
 }
 
-/* ===================== PROFILE SECTION ===================== */
+/* Profile Section */
 #profile {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px;
+  margin-top: 20px;
 }
 
 #profilePic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;          /* perfect circle */
-  object-fit: cover;           /* good crop fit */
-  border: 4px solid #fff;
-  box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid white;
+  object-fit: cover;
 }
 
 #playerName {
-  margin-top: 12px;
+  margin-top: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Game Buttons */
+.buttons {
+  margin-top: 30px;
+}
+
+button {
+  background: #00c8ff;
+  border: none;
+  padding: 12px 25px;
+  margin: 10px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #0088cc;
+}
+
+/* Output text */
+#choices, #result, #coins {
+  margin-top: 20px;
   font-size: 22px;
-  color: #222;
-  font-weight: 700;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+  font-weight: bold;
+}
+
+#result {
+  font-size: 26px;
+  margin-top: 15px;
 }
