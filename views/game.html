@@ -7,13 +7,16 @@
 </head>
 
 <body>
+
+  <!-- Profile Section -->
   <div id="profile">
-  <img id="profilePic" src="" alt="Profile">
-  <h3 id="playerName"></h3>
-</div>
+    <img id="profilePic" src="" alt="Profile">
+    <h3 id="playerName"></h3>
+  </div>
 
   <h1>Stone Paper Pencil Scissor</h1>
 
+  <!-- Buttons -->
   <div class="buttons">
     <button onclick="play('stone')">Stone</button>
     <button onclick="play('paper')">Paper</button>
@@ -21,14 +24,10 @@
     <button onclick="play('scissor')">Scissor</button>
   </div>
 
+  <!-- Output area -->
   <div id="choices"></div>
   <div id="result"></div>
   <div id="coins">Coins: 0</div>
-
-  <div id="profile">
-    <img id="profilePic" src="" alt="Profile">
-    <h3 id="playerName"></h3>
-  </div>
 
   <script>
     const youdict = {stone: 1, paper: 2, pencil: 3, scissor: 4};
