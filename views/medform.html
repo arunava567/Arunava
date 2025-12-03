@@ -1,75 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-  .top-right-links {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 16px;
-  }
-  .top-right-links a {
-    margin-left: 10px;
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-  }
-  .top-right-links a:hover {
-    text-decoration: underline;
-  }
-</style>
 <head>
   <meta charset="UTF-8" />
   <title>Medicine Form</title>
-  <link rel="stylesheet" href="Data.css" />
-</head>
-<body>
-  <div class="top-right-links">
-  <a href="/login.html">🔐 Login</a>
-  <a href="/form.html">📝 Signup</a>
-</div>
 
-  <h1>Kanika Medical Center </h1>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="Data.css" />
+
+  <!-- FIXED INLINE CSS: moved inside head -->
+  <style>
+    .top-right-links {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 16px;
+    }
+    .top-right-links a {
+      margin-left: 10px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .top-right-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-right-links">
+    <a href="/login.html">🔐 Login</a>
+    <a href="/form.html">📝 Signup</a>
+  </div>
+
+  <h1>Kanika Medical Center</h1>
   <h2>Order your medicine</h2>
   <h2><span class="plus-symbol">✚</span></h2>
 
   <div class="container">
+
     <form method="POST" action="/submit-med" enctype="multipart/form-data" onsubmit="return handleImageUpload(event)">
-      
+
       <div class="input-group">
-        <label for="name">Name:</label>
+        <label>Name:</label>
         <input type="text" name="name" required />
       </div>
 
       <div class="input-group">
-        <label for="address">Address:</label>
+        <label>Address:</label>
         <input type="text" name="address" required />
       </div>
 
       <div class="input-group">
-        <label for="medicine">Medicine Name:</label>
+        <label>Medicine Name:</label>
         <input type="text" name="medicine" required />
       </div>
 
       <div class="input-group">
-        <label for="date">Date:</label>
+        <label>Date:</label>
         <input type="date" name="date" required />
       </div>
 
       <div class="input-group">
-        <label for="phone">Phone Number:</label>
+        <label>Phone Number:</label>
         <input type="tel" name="phone" required />
       </div>
 
       <div class="input-group">
-        <label for="image">Upload Prescription Image:</label>
+        <label>Upload Prescription Image:</label>
         <input type="file" id="image" accept="image/*" required />
       </div>
 
       <input type="hidden" name="imgUrl" id="imgUrl" />
-      <input type="submit" value="Submit" />
-    </form>
-    </form>
 
+      <input type="submit" value="Submit" />
+
+    </form>
 
   </div>
 
@@ -83,7 +90,7 @@
       const formData = new FormData();
       formData.append("image", file);
 
-      const apiKey = "e3e5efef585f765316a9976dff6f7879"; // Your imgbb API key
+      const apiKey = "e3e5efef585f765316a9976dff6f7879";
       const url = `https://api.imgbb.com/1/upload?key=${apiKey}`;
 
       try {
@@ -91,7 +98,7 @@
         const data = await res.json();
         document.getElementById("imgUrl").value = data.data.url;
 
-        event.target.submit(); // Submit form after image upload
+        event.target.submit();
       } catch (error) {
         alert("Image upload failed.");
         console.error(error);
@@ -100,5 +107,6 @@
       return false;
     }
   </script>
+
 </body>
 </html>
