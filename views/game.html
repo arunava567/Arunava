@@ -12,13 +12,10 @@
   <div id="profile">
     <img id="profilePic" src="" alt="Profile">
     <h3 id="playerName"></h3>
-  </div>
-  <body>
 
     <!-- LOGOUT BUTTON -->
     <button id="logoutBtn" onclick="logoutUser()">Logout</button>
   </div>
-
 
   <h1>Stone Paper Pencil Scissor</h1>
 
@@ -111,12 +108,13 @@
     }
 
     loadUser();
-    function logoutUser() {
-  localStorage.removeItem("userEmail");
-  alert("Logged out successfully!");
-  window.location.href = "/login";
-}
 
+    function logoutUser() {
+      localStorage.removeItem("userEmail");
+      alert("Logged out successfully!");
+      window.location.href = "/login";
+    }
   </script>
+
 </body>
 </html>
