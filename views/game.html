@@ -111,6 +111,12 @@
     }
 
     loadUser();
+    function logoutUser() {
+  localStorage.removeItem("userEmail");
+  alert("Logged out successfully!");
+  window.location.href = "/login";
+}
+
   </script>
 </body>
 </html>
