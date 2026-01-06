@@ -1,11 +1,15 @@
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #2e2e2e, #444);
-  background-image: url('/images/medicine-blue-background-flat-lay-copy.jpg');
+  background-image: url('../images/medicine-blue-background-flat-lay-copy.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
   margin: 0;
   text-align: center;
 }
+
 
 h1 {
   margin-top: 20px;
