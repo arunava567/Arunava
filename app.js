@@ -1,150 +1,221 @@
-const express = require("express");
-const path = require("path");
-const { google } = require("googleapis");
+const express = require('express');
+const multer = require('multer');
+const { google } = require('googleapis');
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const upload = multer();
+const port = process.env.PORT || 3000;
 
-/* ===================== MIDDLEWARE ===================== */
-app.use(express.json());
+// Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.json());
 
-/* ===================== GOOGLE AUTH ===================== */
+// Serve public folder (CSS, JS, Images)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve views folder HTML
+app.use(express.static(path.join(__dirname, "views")));
+
+// GOOGLE SHEETS AUTH
 const auth = new google.auth.GoogleAuth({
   keyFile: "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json",
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  scopes: "https://www.googleapis.com/auth/spreadsheets"
 });
 
-console.log(
-  "🔐 Using Google key file:",
-  "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json"
-);
 
-const sheets = google.sheets({ version: "v4", auth });
+// Sheet IDs
+const signupSheetId = '1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA';
+const medSheetId = '15AZqj6Fs2MO8VaTcmxRsjJi5Tgs8OpR0qPoiFKSo4Gc';
 
-const SPREADSHEET_ID = "YOUR_SHEET_ID_HERE"; // 🔴 CHANGE THIS
-const SHEET_NAME = "Sheet1";
+// ================= ROUTES =================
 
-/* ===================== SIGNUP ===================== */
-app.post("/signup", async (req, res) => {
-  try {
+// HOME PAGE (index.html)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+// LOGIN
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'login.html'));
+});
+
+// MEDICAL FORM
+app.get('/medform', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'medform.html'));
+});
+
+// GAME PAGE
+app.get('/game.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'game.html'));
+});
+
+// ================= SIGNUP FORM =================
+app.post('/submit', upload.none(), async (req, res) => {
     const { name, email, password, imgUrl } = req.body;
 
-    if (!name || !email || !password) {
-      return res.json({ success: false, message: "Missing fields" });
+    if (!name || !email || !password || !imgUrl) {
+        return res.status(400).send('❌ সব তথ্য পূরণ করুন।');
     }
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[
-          name.trim(),
-          email.trim(),
-          password.trim(),
-          imgUrl || "",
-          "0" // Coins default
-        ]]
-      },
-    });
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
 
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Signup error:", err);
-    res.status(500).json({ success: false });
-  }
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: signupSheetId,
+            range: 'Sheet1!A:E',
+            valueInputOption: 'RAW',
+            resource: {
+                values: [[name, email, password, imgUrl, '0']],
+            },
+        });
+
+        res.send('✅ রেজিস্ট্রেশন সফল হয়েছে!');
+    } catch (error) {
+        console.error('Signup Error:', error);
+        res.status(500).send('❌ রেজিস্ট্রেশন ব্যর্থ হয়েছে।');
+    }
 });
 
-/* ===================== LOGIN ===================== */
-app.post("/login", async (req, res) => {
-  try {
+// ================= LOGIN =================
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    const result = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-    });
-
-    const rows = result.data.values || [];
-    const users = rows.slice(1); // skip header
-
-    const user = users.find(
-      r => r[1]?.trim() === email && r[2]?.trim() === password
-    );
-
-    if (!user) {
-      return res.json({ success: false });
+    if (!email || !password) {
+        return res.status(400).send('❌ ইমেইল ও পাসওয়ার্ড দিন।');
     }
 
-    res.json({
-      success: true,
-      email: user[1],
-      coins: user[4] || "0",
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ success: false });
-  }
-});
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
 
-/* ===================== UPDATE COINS ===================== */
-app.post("/update-coins", async (req, res) => {
-  try {
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: signupSheetId,
+            range: 'Sheet1!A:E',
+        });
+
+        const rows = response.data.values || [];
+
+        // SAFE USER FINDER
+        const user = rows.find(r => r[1] && r[2] && r[1] === email && r[2] === password);
+
+        if (user) {
+            res.send(`
+                <script>
+                    localStorage.setItem("userEmail", "${user[1]}");
+                    alert("✅ লগইন সফল! স্বাগতম, ${user[0]}। Coins: ${user[4] || 0}");
+                    window.location.href = "/game.html";
+                </script>
+            `);
+        } else {
+            res.send('❌ ভুল ইমেইল বা পাসওয়ার্ড।');
+        }
+    } catch (error) {
+        console.error('Login Error:', error);
+        res.status(500).send('❌ সার্ভার ত্রুটি।');
+    }
+});
+// ================= COINS UPDATE =================
+app.post('/update-coins', async (req, res) => {
     const { email, coins } = req.body;
 
-    const result = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:E`,
-    });
+    if (!email) return res.status(400).send("❌ Email is required");
 
-    const rows = result.data.values || [];
-    const users = rows.slice(1);
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
 
-    const index = users.findIndex(r => r[1] === email);
-    if (index === -1) {
-      return res.json({ success: false });
+        const getRes = await sheets.spreadsheets.values.get({
+            spreadsheetId: signupSheetId,
+            range: 'Sheet1!A:E',
+        });
+
+        const rows = getRes.data.values || [];
+
+        const rowIndex = rows.findIndex(r => r[1] === email);
+
+        if (rowIndex === -1) {
+            return res.status(404).send("❌ User not found");
+        }
+
+        await sheets.spreadsheets.values.update({
+            spreadsheetId: signupSheetId,
+            range: `Sheet1!E${rowIndex + 1}`,
+            valueInputOption: 'RAW',
+            resource: {
+                values: [[String(coins || 0)]],
+            },
+        });
+
+        res.send("✅ Coins updated");
+    } catch (err) {
+        console.error("Coin update error:", err);
+        res.status(500).send("❌ Server error");
+    }
+});
+// ================= MEDICINE FORM =================
+app.post('/submit-med', upload.none(), async (req, res) => {
+    const { name, address, medicine, date, phone, imgUrl } = req.body;
+
+    if (!name || !address || !medicine || !date || !imgUrl || !phone) {
+        return res.status(400).send("❌ সব তথ্য পূরণ করুন।");
     }
 
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!E${index + 2}`, // Coins column
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[coins]],
-      },
-    });
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: 'v4', auth: client });
 
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Coin update error:", err);
-    res.status(500).json({ success: false });
-  }
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: medSheetId,
+            range: 'Sheet1!A:F',
+            valueInputOption: 'RAW',
+            resource: {
+                values: [[name, address, medicine, date, phone, imgUrl]],
+            },
+        });
+
+        res.send("✅ ফর্ম সফলভাবে জমা হয়েছে!");
+    } catch (error) {
+        console.error('Submit Error:', error);
+        res.status(500).send("❌ ডেটা জমা ব্যর্থ হয়েছে।");
+    }
+});
+// ================= GET USER DATA (IMG + COINS) =================
+app.post("/get-user", async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) return res.status(400).send("❌ Email required");
+
+    try {
+        const client = await auth.getClient();
+        const sheets = google.sheets({ version: "v4", auth: client });
+
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId: signupSheetId,
+            range: "Sheet1!A:E",
+        });
+
+        const rows = response.data.values || [];
+        const user = rows.find(r => r[1] === email);
+
+        if (!user) return res.status(404).send("❌ User not found");
+
+        res.json({
+            name: user[0],
+            email: user[1],
+            imgUrl: user[3],
+            coins: user[4] || 0
+        });
+
+    } catch (err) {
+        console.error("User fetch error:", err);
+        res.status(500).send("❌ Server error");
+    }
 });
 
-/* ===================== MED FORM (OPTIONAL) ===================== */
-app.post("/medform", async (req, res) => {
-  try {
-    const { name, medicine, location, date } = req.body;
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: "MedForm!A:D",
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [[name, medicine, location, date]],
-      },
-    });
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error("MedForm error:", err);
-    res.status(500).json({ success: false });
-  }
-});
-
-/* ===================== SERVER ===================== */
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// ============= START SERVER =============
+app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
 });
