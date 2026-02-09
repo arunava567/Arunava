@@ -20,10 +20,9 @@ Service account json file path MUST exist in Render Secrets
 Key name: GOOGLE_CREDENTIALS
 */
 const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
+  keyFile: "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json",
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
-
 /* ================= SHEET IDS ================= */
 const SIGNUP_SHEET_ID = "1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA";
 const MED_SHEET_ID = "15AZqj6Fs2MO8VaTcmxRsjJi5Tgs8OpR0qPoiFKSo4Gc";
