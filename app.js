@@ -1,192 +1,150 @@
 const express = require("express");
-const multer = require("multer");
-const { google } = require("googleapis");
 const path = require("path");
+const { google } = require("googleapis");
 
 const app = express();
-const upload = multer();
 const PORT = process.env.PORT || 3000;
 
-/* ================= MIDDLEWARE ================= */
+/* ===================== MIDDLEWARE ===================== */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "views")));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 
-/* ================= GOOGLE AUTH ================= */
-/*
-⚠️ IMPORTANT (Render)
-Service account json file path MUST exist in Render Secrets
-Key name: GOOGLE_CREDENTIALS
-*/
+/* ===================== GOOGLE AUTH ===================== */
 const auth = new google.auth.GoogleAuth({
   keyFile: "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json",
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
-/* ================= SHEET IDS ================= */
-const SIGNUP_SHEET_ID = "1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA";
-const MED_SHEET_ID = "15AZqj6Fs2MO8VaTcmxRsjJi5Tgs8OpR0qPoiFKSo4Gc";
 
-/* ================= PAGES ================= */
-app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "views", "index.html"))
+console.log(
+  "🔐 Using Google key file:",
+  "/etc/secrets/lofty-hall-427902-k4-8f40616ef13b.json"
 );
 
-app.get("/login", (req, res) =>
-  res.sendFile(path.join(__dirname, "views", "login.html"))
-);
+const sheets = google.sheets({ version: "v4", auth });
 
-app.get("/game.html", (req, res) =>
-  res.sendFile(path.join(__dirname, "views", "game.html"))
-);
+const SPREADSHEET_ID = "YOUR_SHEET_ID_HERE"; // 🔴 CHANGE THIS
+const SHEET_NAME = "Sheet1";
 
-app.get("/medform", (req, res) =>
-  res.sendFile(path.join(__dirname, "views", "medform.html"))
-);
-
-/* ================= SIGNUP ================= */
-app.post("/submit", upload.none(), async (req, res) => {
-  const { name, email, password, imgUrl } = req.body;
-
-  if (!name || !email || !password || !imgUrl) {
-    return res.status(400).send("❌ সব তথ্য পূরণ করুন");
-  }
-
+/* ===================== SIGNUP ===================== */
+app.post("/signup", async (req, res) => {
   try {
-    const client = await auth.getClient();
-    const sheets = google.sheets({ version: "v4", auth: client });
+    const { name, email, password, imgUrl } = req.body;
+
+    if (!name || !email || !password) {
+      return res.json({ success: false, message: "Missing fields" });
+    }
 
     await sheets.spreadsheets.values.append({
-      spreadsheetId: SIGNUP_SHEET_ID,
-      range: "Sheet1!A:E",
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A:E`,
       valueInputOption: "RAW",
-      resource: {
-        values: [[name.trim(), email.trim(), password.trim(), imgUrl, "0"]],
+      requestBody: {
+        values: [[
+          name.trim(),
+          email.trim(),
+          password.trim(),
+          imgUrl || "",
+          "0" // Coins default
+        ]]
       },
     });
 
-    res.send("✅ Signup successful");
+    res.json({ success: true });
   } catch (err) {
-    console.error("SIGNUP ERROR:", err);
-    res.status(500).send("❌ Signup failed");
+    console.error("Signup error:", err);
+    res.status(500).json({ success: false });
   }
 });
 
-/* ================= LOGIN (FIXED) ================= */
+/* ===================== LOGIN ===================== */
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).send("❌ Email ও Password দিন");
-  }
-
   try {
-    const client = await auth.getClient();
-    const sheets = google.sheets({ version: "v4", auth: client });
+    const { email, password } = req.body;
 
-    const data = await sheets.spreadsheets.values.get({
-      spreadsheetId: SIGNUP_SHEET_ID,
-      range: "Sheet1!A:E",
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A:E`,
     });
 
-    const rows = data.data.values || [];
-
-    console.log("ROWS FOUND:", rows.length);
-
-    // ⚠️ HEADER বাদ দেওয়া খুব জরুরি
-    const users = rows.slice(1);
+    const rows = result.data.values || [];
+    const users = rows.slice(1); // skip header
 
     const user = users.find(
-      (r) =>
-        r[1]?.trim() === email.trim() &&
-        r[2]?.trim() === password.trim()
+      r => r[1]?.trim() === email && r[2]?.trim() === password
     );
 
     if (!user) {
-      return res.send("❌ Email বা Password ভুল");
+      return res.json({ success: false });
     }
 
-    res.send(`
-      <script>
-        localStorage.setItem("userEmail","${user[1]}");
-        localStorage.setItem("coins","${user[4] || 0}");
-        alert("✅ Login Success");
-        window.location.href="/game.html";
-      </script>
-    `);
+    res.json({
+      success: true,
+      email: user[1],
+      coins: user[4] || "0",
+    });
   } catch (err) {
-    console.error("LOGIN ERROR:", err);
-    res.status(500).send("❌ Server error");
+    console.error("Login error:", err);
+    res.status(500).json({ success: false });
   }
 });
 
-/* ================= COIN UPDATE ================= */
+/* ===================== UPDATE COINS ===================== */
 app.post("/update-coins", async (req, res) => {
-  const { email, coins } = req.body;
-
-  if (!email) return res.status(400).send("❌ Email required");
-
   try {
-    const client = await auth.getClient();
-    const sheets = google.sheets({ version: "v4", auth: client });
+    const { email, coins } = req.body;
 
-    const data = await sheets.spreadsheets.values.get({
-      spreadsheetId: SIGNUP_SHEET_ID,
-      range: "Sheet1!A:E",
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A:E`,
     });
 
-    const rows = data.data.values || [];
+    const rows = result.data.values || [];
     const users = rows.slice(1);
 
-    const index = users.findIndex(
-      (r) => r[1]?.trim() === email.trim()
-    );
-
-    if (index === -1) return res.status(404).send("❌ User not found");
+    const index = users.findIndex(r => r[1] === email);
+    if (index === -1) {
+      return res.json({ success: false });
+    }
 
     await sheets.spreadsheets.values.update({
-      spreadsheetId: SIGNUP_SHEET_ID,
-      range: `Sheet1!E${index + 2}`,
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!E${index + 2}`, // Coins column
       valueInputOption: "RAW",
-      resource: { values: [[String(coins)]] },
-    });
-
-    res.send("✅ Coins updated");
-  } catch (err) {
-    console.error("COIN ERROR:", err);
-    res.status(500).send("❌ Coin update failed");
-  }
-});
-
-/* ================= MED FORM ================= */
-app.post("/submit-med", upload.none(), async (req, res) => {
-  const { name, address, medicine, date, phone, imgUrl } = req.body;
-
-  if (!name || !address || !medicine || !date || !phone || !imgUrl) {
-    return res.status(400).send("❌ সব তথ্য দিন");
-  }
-
-  try {
-    const client = await auth.getClient();
-    const sheets = google.sheets({ version: "v4", auth: client });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: MED_SHEET_ID,
-      range: "Sheet1!A:F",
-      valueInputOption: "RAW",
-      resource: {
-        values: [[name, address, medicine, date, phone, imgUrl]],
+      requestBody: {
+        values: [[coins]],
       },
     });
 
-    res.send("✅ Med form submitted");
+    res.json({ success: true });
   } catch (err) {
-    console.error("MED ERROR:", err);
-    res.status(500).send("❌ Med submit failed");
+    console.error("Coin update error:", err);
+    res.status(500).json({ success: false });
   }
 });
 
-/* ================= START ================= */
-app.listen(PORT, () =>
-  console.log(`🚀 Server running on port ${PORT}`)
-);
+/* ===================== MED FORM (OPTIONAL) ===================== */
+app.post("/medform", async (req, res) => {
+  try {
+    const { name, medicine, location, date } = req.body;
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "MedForm!A:D",
+      valueInputOption: "RAW",
+      requestBody: {
+        values: [[name, medicine, location, date]],
+      },
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("MedForm error:", err);
+    res.status(500).json({ success: false });
+  }
+});
+
+/* ===================== SERVER ===================== */
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
