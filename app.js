@@ -67,7 +67,7 @@ app.post('/submit', upload.none(), async (req, res) => {
             range: 'Sheet1!A:E',
             valueInputOption: 'RAW',
             resource: {
-                values: [[name, email, password, imgUrl, '0']],
+                values: [[name, email, password, img Url, '0']],
             },
         });
 
