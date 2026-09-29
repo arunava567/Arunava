@@ -1,88 +1,148 @@
-body {
-  font-family: Arial, sans-serif;
-  background:
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-    url('../images/medicine-blue-background-flat-lay-copy.jpg');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: white;
+* {
   margin: 0;
-  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-
-h1 {
-  margin-top: 20px;
-  font-size: 35px;
-  text-shadow: 2px 2px 5px black;
+body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-/* Profile Section */
-#profile {
-  margin-top: 20px;
+/* Navbar & Coin Display */
+.navbar {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 15px 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-#profilePic {
-  width: 90px;
-  height: 90px;
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-profile img {
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  border: 3px solid white;
-  object-fit: cover;
+  border: 2px solid #6366f1;
 }
 
-#playerName {
-  margin-top: 5px;
-  font-size: 20px;
-  font-weight: bold;
+.coin-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Game Buttons */
-.buttons {
-  margin-top: 30px;
+/* Main Container / Card */
+.main-card {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 35px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
-button {
-  background: #00c8ff;
-  border: none;
-  padding: 12px 25px;
-  margin: 10px;
-  font-size: 18px;
-  border-radius: 8px;
+/* Rock Paper Scissors Arena */
+.game-arena {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 30px 0;
+}
+
+.choice-btn {
+  background: #1e293b;
+  border: 2px solid #3b82f6;
+  border-radius: 20px;
+  width: 100px;
+  height: 100px;
+  font-size: 2.5rem;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button:hover {
-  background: #0088cc;
+.choice-btn:hover {
+  transform: translateY(-8px) scale(1.05);
+  background: #3b82f6;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
 }
 
-/* Output text */
-#choices, #result, #coins {
-  margin-top: 20px;
-  font-size: 22px;
-  font-weight: bold;
+/* Custom Input Forms & Buttons */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
-#result {
-  font-size: 26px;
-  margin-top: 15px;
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #94a3b8;
+  font-size: 0.9rem;
 }
-#logoutBtn {
-  margin-top: 10px;
-  background: #ff4d4d;
+
+.form-control {
+  width: 100%;
+  padding: 14px 18px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #6366f1;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: none;
+  border-radius: 12px;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: 0.3s;
+  transition: opacity 0.3s, transform 0.2s;
 }
 
-#logoutBtn:hover {
-  background: #cc0000;
+.btn-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
 }
-
