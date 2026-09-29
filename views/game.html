@@ -4,28 +4,123 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stone Paper Scissors Game</title>
-  <link rel="stylesheet" href="/css/game.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans Bengali', 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .navbar {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 15px 25px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-profile img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid #6366f1;
+      object-fit: cover;
+    }
+
+    .coin-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .game-card {
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 35px;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-arena {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 0;
+    }
+
+    .choice-btn {
+      background: #1e293b;
+      border: 2px solid #3b82f6;
+      border-radius: 20px;
+      width: 90px;
+      height: 90px;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .choice-btn:hover {
+      transform: translateY(-5px);
+      background: #3b82f6;
+    }
+
+    #resultBox {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Top Navigation / User Header -->
   <div class="navbar">
     <div class="user-profile">
-      <img id="userImg" src="https://via.placeholder.com/45" alt="User Avatar">
+      <img id="userImg" src="https://via.placeholder.com/45" alt="User">
       <div>
-        <h4 id="userName">User Name</h4>
-        <small style="color: #94a3b8;">Player</small>
+        <h4 id="userName">খেলোয়াড়</h4>
+        <small id="userEmail" style="color: #94a3b8;"></small>
       </div>
     </div>
     <div class="coin-badge">
-      🪙 <span id="coinCount">0</span> Coins
+      🪙 <span id="coinCount">0</span>
     </div>
   </div>
 
-  <!-- Game Card Arena -->
-  <div class="main-card">
-    <h2 style="margin-bottom: 10px; color: #f8fafc;">Stone Paper Scissors</h2>
-    <p style="color: #94a3b8; margin-bottom: 25px;">জিতলে কয়েন +১, হারলে কয়েন -১</p>
+  <div class="game-card">
+    <h2>🎮 Stone Paper Scissors</h2>
+    <p style="color: #94a3b8; margin-top: 5px;">জিতলে +১ কয়েন, হারলে -১ কয়েন</p>
 
     <div class="game-arena">
       <button class="choice-btn" onclick="playGame('stone')">🪨</button>
@@ -33,10 +128,65 @@
       <button class="choice-btn" onclick="playGame('scissors')">✂️</button>
     </div>
 
-    <div id="resultBox" style="margin-top: 20px; font-size: 1.2rem; font-weight: 600; min-height: 40px;">
-      আপনার চাল বেছে নিন!
-    </div>
+    <div id="resultBox">আপনার চাল দিন!</div>
   </div>
 
+  <script>
+    const userEmail = localStorage.getItem("userEmail");
+    let currentCoins = 0;
+
+    if (!userEmail) {
+      alert("⚠️ প্রথমে লগইন করুন!");
+      window.location.href = "/login";
+    } else {
+      // Fetch user data from Express Server
+      fetch('/get-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('userName').innerText = data.name || "User";
+        document.getElementById('userEmail').innerText = data.email || "";
+        document.getElementById('userImg').src = data.imgUrl || "https://via.placeholder.com/45";
+        currentCoins = parseInt(data.coins) || 0;
+        document.getElementById('coinCount').innerText = currentCoins;
+      })
+      .catch(err => console.error("User Load Error:", err));
+    }
+
+    function playGame(playerChoice) {
+      const choices = ['stone', 'paper', 'scissors'];
+      const compChoice = choices[Math.floor(Math.random() * choices.length)];
+      let resultText = "";
+      let coinDelta = 0;
+
+      if (playerChoice === compChoice) {
+        resultText = `ড্র হয়েছে! আপনি ও কম্পিউটার উভয়েই ${playerChoice} দিয়েছেন।`;
+      } else if (
+        (playerChoice === 'stone' && compChoice === 'scissors') ||
+        (playerChoice === 'paper' && compChoice === 'stone') ||
+        (playerChoice === 'scissors' && compChoice === 'paper')
+      ) {
+        resultText = `🎉 আপনি জিতেছেন! কম্পিউটার দিয়েছিল ${compChoice}। (+১ কয়েন)`;
+        coinDelta = 1;
+      } else {
+        resultText = `❌ আপনি হেরেছেন! কম্পিউটার দিয়েছিল ${compChoice}। (-১ কয়েন)`;
+        coinDelta = -1;
+      }
+
+      currentCoins += coinDelta;
+      document.getElementById('coinCount').innerText = currentCoins;
+      document.getElementById('resultBox').innerText = resultText;
+
+      // Update Coins to Google Sheets via Express API
+      fetch('/update-coins', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail, coins: currentCoins })
+      }).catch(err => console.error("Coin update error:", err));
+    }
+  </script>
 </body>
 </html>
