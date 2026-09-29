@@ -3,114 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPPC পোর্টাল</title>
+  <title>KANIKA MEDICAL & HEALTHCARE</title>
   <link rel="stylesheet" href="/css/Data.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Noto Sans Bengali', 'Poppins', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      color: #f8fafc;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .home-card {
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 40px 30px;
-      width: 100%;
-      max-width: 450px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .home-card h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, #60a5fa, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .home-card p {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      margin-bottom: 30px;
-    }
-
-    .menu-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .btn-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 14px 20px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 14px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .btn-link:hover {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      border-color: #6366f1;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-    }
-
-    .btn-link.game-btn {
-      background: linear-gradient(135deg, #10b981, #059669);
-      border-color: #10b981;
-    }
-
-    .btn-link.game-btn:hover {
-      background: linear-gradient(135deg, #059669, #047857);
-      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-    }
-  </style>
 </head>
 <body>
 
-  <div class="home-card">
-    <h1>🌐 স্বাগতম SPPC পোর্টালে</h1>
-    <p>আপনার গন্তব্য বেছে নিন</p>
+  <!-- Top Support Bar -->
+  <div class="top-bar">
+    <div>📞 হেল্পলাইন: +91 98765 43210</div>
+    <div>🚚 দ্রুত হোম ডেলিভারি | 💯 ১০০% আসল ওষুধ</div>
+  </div>
 
-    <div class="menu-container">
-      <a href="/login" class="btn-link">
-        <span>🔐</span> অ্যাকাউন্ট লগইন
-      </a>
+  <!-- Header -->
+  <div class="navbar">
+    <a href="/" class="logo">
+      <span class="logo-badge">💊</span>
+      <span>KANIKA MEDICAL</span>
+    </a>
+    <div style="display: flex; gap: 10px;">
+      <a href="/login" class="btn btn-secondary" style="border: 1px solid #cbd5e1;">🔐 লগইন</a>
+      <a href="/medform" class="btn btn-primary">📝 অর্ডার দিন</a>
+    </div>
+  </div>
 
-      <a href="/medform" class="btn-link">
-        <span>💊</span> মেডিসিন ফর্ম
-      </a>
-
-      <a href="/game.html" class="btn-link game-btn">
-        <span>🎮</span> খেলা শুরু করুন
-      </a>
+  <div class="container">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-text">
+        <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">অনলাইন ফার্মেসি ও সেবা</span>
+        <h1 style="margin-top: 15px;">আপনার প্রয়োজনীয় আসল ওষুধ এখন ঘরে বসেই অর্ডার করুন</h1>
+        <p>কনিকা মেডিকেল সেন্টারে পাচ্ছেন ন্যায্য মূল্যে স্বাস্থ্যসম্মত ও ১০০% খাঁটি ওষুধের নিশ্চয়তা।</p>
+        
+        <div style="display: flex; gap: 12px;">
+          <a href="/medform" class="btn btn-primary">💊 মেডিকেল ফর্ম</a>
+          <a href="/game.html" class="btn btn-secondary">🎮 গেম খেলে কয়েন জিতুন</a>
+        </div>
+      </div>
     </div>
   </div>
 
