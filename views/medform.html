@@ -1,113 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <title>Medicine Form</title>
-
-  <!-- External CSS -->
-  <link rel="stylesheet" href="/css/Data.css">
-
-  <!-- FIXED INLINE CSS: moved inside head -->
-  <style>
-    .top-right-links {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 16px;
-    }
-    .top-right-links a {
-      margin-left: 10px;
-      text-decoration: none;
-      color: #007bff;
-      font-weight: bold;
-    }
-    .top-right-links a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicine Request Form</title>
+  <link rel="stylesheet" href="/css/game.css">
 </head>
-
 <body>
 
-  <div class="top-right-links">
-    <a href="/login.html">🔐 Login</a>
-    <a href="/form.html">📝 Signup</a>
-     <a href="/index.html">Home</a>
-  </div>
+  <div class="main-card">
+    <h2 style="margin-bottom: 20px;">Kanika Medical Order</h2>
 
-  <h1>Kanika Medical Center</h1>
-  <h2>Order your medicine</h2>
-  <h2><span class="plus-symbol">✚</span></h2>
-
-  <div class="container">
-
-    <form method="POST" action="/submit-med" enctype="multipart/form-data" onsubmit="return handleImageUpload(event)">
-
-      <div class="input-group">
-        <label>Name:</label>
-        <input type="text" name="name" required />
+    <form id="medForm">
+      <div class="form-group">
+        <label>Patient Name</label>
+        <input type="text" class="form-control" placeholder="Full Name" required>
       </div>
 
-      <div class="input-group">
-        <label>Address:</label>
-        <input type="text" name="address" required />
+      <div class="form-group">
+        <label>Medicine Details</label>
+        <textarea class="form-control" rows="3" placeholder="Enter medicine names and quantity..."></textarea>
       </div>
 
-      <div class="input-group">
-        <label>Medicine Name:</label>
-        <input type="text" name="medicine" required />
-      </div>
-
-      <div class="input-group">
-        <label>Date:</label>
-        <input type="date" name="date" required />
-      </div>
-
-      <div class="input-group">
-        <label>Phone Number:</label>
-        <input type="tel" name="phone" required />
-      </div>
-
-      <div class="input-group">
-        <label>Upload Prescription Image:</label>
-        <input type="file" id="image" accept="image/*" required />
-      </div>
-
-      <input type="hidden" name="imgUrl" id="imgUrl" />
-
-      <input type="submit" value="Submit" />
-
+      <button type="submit" class="btn-primary">Submit Order</button>
     </form>
-
   </div>
-
-  <script>
-    async function handleImageUpload(event) {
-      event.preventDefault();
-
-      const file = document.getElementById('image').files[0];
-      if (!file) return alert("Please select an image.");
-
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const apiKey = "e3e5efef585f765316a9976dff6f7879";
-      const url = `https://api.imgbb.com/1/upload?key=${apiKey}`;
-
-      try {
-        const res = await fetch(url, { method: "POST", body: formData });
-        const data = await res.json();
-        document.getElementById("imgUrl").value = data.data.url;
-
-        event.target.submit();
-      } catch (error) {
-        alert("Image upload failed.");
-        console.error(error);
-      }
-
-      return false;
-    }
-  </script>
 
 </body>
 </html>
