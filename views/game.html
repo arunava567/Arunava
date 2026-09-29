@@ -3,212 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stone Paper Pencil Scissor</title>
+  <title>Stone Paper Pencil Scissor Game</title>
+  <link rel="stylesheet" href="/css/Data.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Noto Sans Bengali', 'Poppins', sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      color: #f8fafc;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .navbar {
-      width: 100%;
-      max-width: 680px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(12px);
-      padding: 15px 20px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 25px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .user-profile img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      border: 2px solid #6366f1;
-      object-fit: cover;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .coin-badge {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 1rem;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-    }
-
-    .btn-logout {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid #ef4444;
-      color: #ef4444;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-    }
-
-    .btn-logout:hover {
-      background: #ef4444;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-    }
-
-    .game-card {
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 35px 25px;
-      width: 100%;
-      max-width: 680px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .game-card h2 {
-      font-size: 1.8rem;
-      background: linear-gradient(135deg, #60a5fa, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .buttons {
+    .game-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin: 30px 0;
+      margin: 25px 0;
     }
 
     .choice-btn {
-      background: #1e293b;
-      border: 2px solid #3b82f6;
-      border-radius: 16px;
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: 14px;
       padding: 15px 10px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
-      color: #ffffff;
+      color: #166534;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-    }
-
-    .choice-btn span {
-      font-size: 2rem;
+      gap: 6px;
     }
 
     .choice-btn:hover {
-      transform: translateY(-5px);
-      background: #3b82f6;
-      box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+      background: #22c55e;
+      color: white;
+      border-color: #22c55e;
+      transform: translateY(-3px);
     }
 
-    #choices {
-      font-size: 1rem;
-      color: #94a3b8;
-      margin-bottom: 10px;
-      min-height: 24px;
-    }
-
-    #result {
-      font-size: 1.4rem;
-      font-weight: 700;
-      min-height: 35px;
-    }
-
-    .win-text { color: #10b981; }
-    .lose-text { color: #ef4444; }
-    .draw-text { color: #f59e0b; }
-
-    @media (max-width: 550px) {
-      .buttons {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .navbar {
-        flex-direction: column;
-        gap: 12px;
-      }
+    @media (max-width: 500px) {
+      .game-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navbar with User Info, Coins and Logout Button -->
   <div class="navbar">
-    <div class="user-profile">
-      <img id="userImg" src="https://via.placeholder.com/45" alt="User">
-      <div style="text-align: left;">
-        <h4 id="userName">খেলোয়াড়</h4>
-        <small id="userEmail" style="color: #94a3b8;"></small>
+    <div class="user-info">
+      <img id="userImg" src="https://via.placeholder.com/42" alt="User">
+      <div>
+        <h4 id="userName" style="color: #166534;">খেলোয়াড়</h4>
+        <small id="userEmail" style="color: #64748b;"></small>
       </div>
     </div>
 
-    <div class="nav-right">
+    <div style="display: flex; align-items: center; gap: 12px;">
       <div class="coin-badge">
-        🪙 <span id="coins">0</span>
+        🪙 <span id="coins">0</span> Coins
       </div>
-      <button class="btn-logout" onclick="logout()">🚪 লগআউট</button>
+      <button class="btn btn-danger" onclick="logout()" style="padding: 6px 12px; font-size: 0.85rem;">🚪 লগআউট</button>
     </div>
   </div>
 
-  <!-- Game Card -->
-  <div class="game-card">
-    <h2>🎮 Stone Paper Pencil Scissor</h2>
-    <p style="color: #94a3b8; margin-top: 6px;">আপনার চাল বেছে নিন</p>
+  <div class="container" style="max-width: 650px;">
+    <div class="medical-card" style="text-align: center;">
+      <h2 style="color: #166534;">🎮 Stone Paper Pencil Scissor</h2>
+      <p style="color: #64748b; margin-top: 5px;">চাল বেছে নিয়ে কয়েন জিতুন</p>
 
-    <div class="buttons">
-      <button class="choice-btn" onclick="play('stone')">
-        <span>🪨</span> Stone
-      </button>
-      <button class="choice-btn" onclick="play('paper')">
-        <span>📄</span> Paper
-      </button>
-      <button class="choice-btn" onclick="play('pencil')">
-        <span>✏️</span> Pencil
-      </button>
-      <button class="choice-btn" onclick="play('scissor')">
-        <span>✂️</span> Scissor
-      </button>
+      <div class="game-grid">
+        <button class="choice-btn" onclick="play('stone')">
+          <span style="font-size: 1.8rem;">🪨</span> Stone
+        </button>
+        <button class="choice-btn" onclick="play('paper')">
+          <span style="font-size: 1.8rem;">📄</span> Paper
+        </button>
+        <button class="choice-btn" onclick="play('pencil')">
+          <span style="font-size: 1.8rem;">✏️</span> Pencil
+        </button>
+        <button class="choice-btn" onclick="play('scissor')">
+          <span style="font-size: 1.8rem;">✂️</span> Scissor
+        </button>
+      </div>
+
+      <div id="choices" style="color: #64748b; margin-bottom: 10px;">কয়েন জিততে খেলা শুরু করুন!</div>
+      <div id="result" style="font-size: 1.3rem; font-weight: 700; min-height: 30px;"></div>
     </div>
-
-    <div id="choices">কয়েন জিততে খেলা শুরু করুন!</div>
-    <div id="result"></div>
   </div>
 
   <script>
@@ -218,7 +92,6 @@
     let coins = 0;
     const email = localStorage.getItem("userEmail");
 
-    // Check Login & Load Data
     if (!email) {
       alert("⚠️ প্রথমে লগইন করুন!");
       window.location.href = "/login";
@@ -232,7 +105,7 @@
       .then(data => {
         document.getElementById('userName').innerText = data.name || "Player";
         document.getElementById('userEmail').innerText = data.email || "";
-        document.getElementById('userImg').src = data.imgUrl || "https://via.placeholder.com/45";
+        document.getElementById('userImg').src = data.imgUrl || "https://via.placeholder.com/42";
         coins = parseInt(data.coins) || 0;
         document.getElementById("coins").innerText = coins;
       })
@@ -259,34 +132,31 @@
 
       if (user === computer) {
         result = "It's a Draw";
-        resultElem.className = "draw-text";
+        resultElem.style.color = "#d97706";
       } else if (
         (computer === 1 && user === 2) || (computer === 3 && user === 1) ||
         (computer === 4 && user === 1) || (computer === 2 && user === 4) ||
         (computer === 2 && user === 3) || (computer === 4 && user === 3)
       ) {
         result = "You Win";
-        resultElem.className = "win-text";
+        resultElem.style.color = "#16a34a";
         coins += 1;
       } else {
         result = "You Lose";
-        resultElem.className = "lose-text";
+        resultElem.style.color = "#dc2626";
         coins -= 1;
       }
 
       resultElem.innerText = result;
       document.getElementById("coins").innerText = coins;
 
-      // Voice Announcement
       window.speechSynthesis.cancel();
       const msg = new SpeechSynthesisUtterance(`You chose ${reverseDict[user]}, computer chose ${reverseDict[computer]}. ${result}`);
       window.speechSynthesis.speak(msg);
 
-      // Sync Coins to Sheet
       updateCoins();
     }
 
-    // Logout Function
     function logout() {
       if (confirm("আপনি কি নিশ্চিত যে লগআউট করতে চান?")) {
         localStorage.removeItem("userEmail");
