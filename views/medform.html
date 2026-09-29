@@ -3,27 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Medicine Request Form</title>
-  <link rel="stylesheet" href="/css/game.css">
+  <title>Medicine Order - Kanika Medical</title>
+  <link rel="stylesheet" href="/css/Data.css">
 </head>
 <body>
 
-  <div class="main-card">
-    <h2 style="margin-bottom: 20px;">Kanika Medical Order</h2>
+  <div class="navbar">
+    <a href="/" class="logo">
+      <span class="logo-badge">💊</span>
+      <span>KANIKA MEDICAL</span>
+    </a>
+    <a href="/" class="btn btn-secondary" style="border: 1px solid #cbd5e1;">🏠 হোম</a>
+  </div>
 
-    <form id="medForm">
-      <div class="form-group">
-        <label>Patient Name</label>
-        <input type="text" class="form-control" placeholder="Full Name" required>
-      </div>
+  <div class="container" style="max-width: 600px;">
+    <div class="medical-card">
+      <h2 style="color: #166534; margin-bottom: 20px; text-align: center;">💊 ওষুধের জন্য রিকুয়েস্ট করুন</h2>
 
-      <div class="form-group">
-        <label>Medicine Details</label>
-        <textarea class="form-control" rows="3" placeholder="Enter medicine names and quantity..."></textarea>
-      </div>
+      <form action="/submit-med" method="POST">
+        <div class="form-group">
+          <label>রোগীর নাম</label>
+          <input type="text" name="name" class="form-control" placeholder="রোগীর নাম লিখুন" required>
+        </div>
 
-      <button type="submit" class="btn-primary">Submit Order</button>
-    </form>
+        <div class="form-group">
+          <label>ফোন নম্বর</label>
+          <input type="tel" name="phone" class="form-control" placeholder="ফোন নাম্বার" required>
+        </div>
+
+        <div class="form-group">
+          <label>ঠিকানা</label>
+          <input type="text" name="address" class="form-control" placeholder="সম্পূর্ণ ঠিকানা" required>
+        </div>
+
+        <div class="form-group">
+          <label>ওষুধের নাম ও পরিমাণ</label>
+          <textarea name="medicine" class="form-control" rows="3" placeholder="ওষুধের নাম লিখুন..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>তারিখ</label>
+          <input type="date" name="date" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>প্রেসক্রিপশনের ছবি/লিঙ্ক (URL)</label>
+          <input type="url" name="imgUrl" class="form-control" placeholder="https://..." required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">অর্ডার নিশ্চিত করুন</button>
+      </form>
+    </div>
   </div>
 
 </body>
