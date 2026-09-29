@@ -1,120 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <title>Stone Paper Pencil Scissor</title>
-  <link rel="stylesheet" href="css/game.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stone Paper Scissors Game</title>
+  <link rel="stylesheet" href="/css/game.css">
 </head>
-
 <body>
 
-  <!-- Profile Section -->
-  <div id="profile">
-    <img id="profilePic" src="" alt="Profile">
-    <h3 id="playerName"></h3>
-
-    <!-- LOGOUT BUTTON -->
-    <button id="logoutBtn" onclick="logoutUser()">Logout</button>
+  <!-- Top Navigation / User Header -->
+  <div class="navbar">
+    <div class="user-profile">
+      <img id="userImg" src="https://via.placeholder.com/45" alt="User Avatar">
+      <div>
+        <h4 id="userName">User Name</h4>
+        <small style="color: #94a3b8;">Player</small>
+      </div>
+    </div>
+    <div class="coin-badge">
+      🪙 <span id="coinCount">0</span> Coins
+    </div>
   </div>
 
-  <h1>Stone Paper Pencil Scissor</h1>
+  <!-- Game Card Arena -->
+  <div class="main-card">
+    <h2 style="margin-bottom: 10px; color: #f8fafc;">Stone Paper Scissors</h2>
+    <p style="color: #94a3b8; margin-bottom: 25px;">জিতলে কয়েন +১, হারলে কয়েন -১</p>
 
-  <!-- Buttons -->
-  <div class="buttons">
-    <button onclick="play('stone')">Stone</button>
-    <button onclick="play('paper')">Paper</button>
-    <button onclick="play('pencil')">Pencil</button>
-    <button onclick="play('scissor')">Scissor</button>
+    <div class="game-arena">
+      <button class="choice-btn" onclick="playGame('stone')">🪨</button>
+      <button class="choice-btn" onclick="playGame('paper')">📄</button>
+      <button class="choice-btn" onclick="playGame('scissors')">✂️</button>
+    </div>
+
+    <div id="resultBox" style="margin-top: 20px; font-size: 1.2rem; font-weight: 600; min-height: 40px;">
+      আপনার চাল বেছে নিন!
+    </div>
   </div>
-
-  <!-- Output area -->
-  <div id="choices"></div>
-  <div id="result"></div>
-  <div id="coins">Coins: 0</div>
-
-  <script>
-    const youdict = {stone: 1, paper: 2, pencil: 3, scissor: 4};
-    const reverseDict = {1: 'Stone', 2: 'Paper', 3: 'Pencil', 4: 'Scissor'};
-
-    let coins = 0;
-    const email = localStorage.getItem("userEmail");
-
-    async function updateCoins() {
-      await fetch('/update-coins', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, coins })
-      });
-    }
-
-    function play(userChoice) {
-      const user = youdict[userChoice];
-      const computer = Math.floor(Math.random() * 4) + 1;
-
-      document.getElementById("choices").innerText =
-        `You chose ${reverseDict[user]}. Computer chose ${reverseDict[computer]}.`;
-
-      let result = "";
-
-      if (user === computer) {
-        result = "It's a Draw";
-      } 
-      else if (
-        (computer === 1 && user === 2) ||
-        (computer === 3 && user === 1) ||
-        (computer === 4 && user === 1) ||
-        (computer === 2 && user === 4) ||
-        (computer === 2 && user === 3) ||
-        (computer === 4 && user === 3)
-      ) {
-        result = "You Win";
-        coins += 1;
-      } 
-      else {
-        result = "You Lose";
-        coins -= 1;
-      }
-
-      document.getElementById("result").innerText = result;
-      document.getElementById("coins").innerText = `Coins: ${coins}`;
-
-      const msg = new SpeechSynthesisUtterance(
-        `You chose ${reverseDict[user]}, computer chose ${reverseDict[computer]}. ${result}`
-      );
-      window.speechSynthesis.speak(msg);
-
-      updateCoins();
-    }
-
-    async function loadUser() {
-      if (!email) {
-        alert("❌ Not logged in!");
-        window.location.href = "/login";
-        return;
-      }
-
-      const res = await fetch("/get-user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await res.json();
-
-      document.getElementById("profilePic").src = data.imgUrl;
-      document.getElementById("playerName").innerText = data.name;
-      coins = parseInt(data.coins);
-      document.getElementById("coins").innerText = `Coins: ${coins}`;
-    }
-
-    loadUser();
-
-    function logoutUser() {
-      localStorage.removeItem("userEmail");
-      alert("Logged out successfully!");
-      window.location.href = "/login";
-    }
-  </script>
 
 </body>
 </html>
