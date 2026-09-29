@@ -27,13 +27,13 @@
 
     .navbar {
       width: 100%;
-      max-width: 650px;
+      max-width: 680px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: rgba(30, 41, 59, 0.7);
       backdrop-filter: blur(12px);
-      padding: 15px 25px;
+      padding: 15px 20px;
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       margin-bottom: 25px;
@@ -47,20 +47,44 @@
     }
 
     .user-profile img {
-      width: 48px;
-      height: 48px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       border: 2px solid #6366f1;
       object-fit: cover;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     .coin-badge {
       background: linear-gradient(135deg, #f59e0b, #d97706);
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: 30px;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1rem;
       box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
     }
 
     .game-card {
@@ -70,7 +94,7 @@
       border-radius: 24px;
       padding: 35px 25px;
       width: 100%;
-      max-width: 650px;
+      max-width: 680px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
@@ -132,30 +156,38 @@
     .lose-text { color: #ef4444; }
     .draw-text { color: #f59e0b; }
 
-    @media (max-width: 500px) {
+    @media (max-width: 550px) {
       .buttons {
         grid-template-columns: repeat(2, 1fr);
+      }
+      .navbar {
+        flex-direction: column;
+        gap: 12px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navbar -->
+  <!-- Navbar with User Info, Coins and Logout Button -->
   <div class="navbar">
     <div class="user-profile">
-      <img id="userImg" src="https://via.placeholder.com/48" alt="User">
-      <div>
+      <img id="userImg" src="https://via.placeholder.com/45" alt="User">
+      <div style="text-align: left;">
         <h4 id="userName">খেলোয়াড়</h4>
         <small id="userEmail" style="color: #94a3b8;"></small>
       </div>
     </div>
-    <div class="coin-badge">
-      🪙 <span id="coins">0</span>
+
+    <div class="nav-right">
+      <div class="coin-badge">
+        🪙 <span id="coins">0</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 লগআউট</button>
     </div>
   </div>
 
-  <!-- Game Box -->
+  <!-- Game Card -->
   <div class="game-card">
     <h2>🎮 Stone Paper Pencil Scissor</h2>
     <p style="color: #94a3b8; margin-top: 6px;">আপনার চাল বেছে নিন</p>
@@ -186,7 +218,7 @@
     let coins = 0;
     const email = localStorage.getItem("userEmail");
 
-    // প্রথমে সার্ভার থেকে প্লেয়ারের কয়েন ও প্রোফাইল ডাটা লোড করা
+    // Check Login & Load Data
     if (!email) {
       alert("⚠️ প্রথমে লগইন করুন!");
       window.location.href = "/login";
@@ -200,7 +232,7 @@
       .then(data => {
         document.getElementById('userName').innerText = data.name || "Player";
         document.getElementById('userEmail').innerText = data.email || "";
-        document.getElementById('userImg').src = data.imgUrl || "https://via.placeholder.com/48";
+        document.getElementById('userImg').src = data.imgUrl || "https://via.placeholder.com/45";
         coins = parseInt(data.coins) || 0;
         document.getElementById("coins").innerText = coins;
       })
@@ -245,13 +277,21 @@
       resultElem.innerText = result;
       document.getElementById("coins").innerText = coins;
 
-      // ভয়েস স্পিচ ফিচার
-      window.speechSynthesis.cancel(); // আগের ভয়েস চালু থাকলে তা বন্ধ করার জন্য
+      // Voice Announcement
+      window.speechSynthesis.cancel();
       const msg = new SpeechSynthesisUtterance(`You chose ${reverseDict[user]}, computer chose ${reverseDict[computer]}. ${result}`);
       window.speechSynthesis.speak(msg);
 
-      // Google Sheets-এ কয়েন সিঙ্ক করা
+      // Sync Coins to Sheet
       updateCoins();
+    }
+
+    // Logout Function
+    function logout() {
+      if (confirm("আপনি কি নিশ্চিত যে লগআউট করতে চান?")) {
+        localStorage.removeItem("userEmail");
+        window.location.href = "/login";
+      }
     }
   </script>
 </body>
