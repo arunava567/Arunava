@@ -215,13 +215,14 @@ body {
   background: conic-gradient(
     transparent,
     transparent,
-    #22c55e,
-    #86efac,
+    #10b981,
+    #34d399,
+    #a7f3d0,
     #ffffff,
-    #22c55e,
+    #34d399,
     transparent
   );
-  animation: rotateLight 4s linear infinite;
+  animation: rotateLight 3s linear infinite;
 }
 
 /* ভেতরের গ্রিন বক্সের মূল কনটেন্ট */
