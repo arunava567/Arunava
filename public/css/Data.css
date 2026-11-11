@@ -36,11 +36,27 @@ body {
   border-bottom: 2px solid #e2e8f0;
 }
 
+/* প্রফেশনাল গ্লোয়িং লোগো স্টাইল */
 .logo {
   display: flex;
   align-items: center;
   gap: 12px;
   text-decoration: none;
+}
+
+.logo-badge {
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  color: white;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+  border: 1px solid #86efac;
 }
 
 .logo span:not(.logo-badge) {
@@ -49,8 +65,16 @@ body {
   color: #166534;
   display: flex;
   flex-direction: column;
+  line-height: 1.1;
 }
 
+.logo small {
+  font-size: 0.65rem;
+  color: #15803d;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+}
 /* Main Container / Card */
 .container {
   max-width: 900px;
