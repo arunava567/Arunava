@@ -26,7 +26,7 @@ const auth = new google.auth.GoogleAuth({
 
 // Sheet IDs
 const signupSheetId = '1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA';
-const medSheetId = '15AZqj6Fs2MO8VaTcmxRsjJi5Tgs8OpR0qPoiFKSo4Gc';
+const medSheetId = '1FEq38P8yoq-Y4DUHk_yWGLKj4iiRxQow5PvmclwOjm4';
 
 // ================= ROUTES =================
 
@@ -156,10 +156,10 @@ app.post('/update-coins', async (req, res) => {
 });
 // ================= MEDICINE FORM =================
 app.post('/submit-med', upload.none(), async (req, res) => {
-    const { name, address, medicine, date, phone, imgUrl } = req.body;
+    const { name, phone, medicine, address, date, imgUrl } = req.body;
 
-    if (!name || !address || !medicine || !date || !imgUrl || !phone) {
-        return res.status(400).send("❌ সব তথ্য পূরণ করুন।");
+    if (!name || !phone || !medicine || !address || !date || !imgUrl) {
+        return res.status(400).send("❌ সব তথ্য এবং প্রেসক্রিপশনের ছবি দিন।");
     }
 
     try {
@@ -169,9 +169,10 @@ app.post('/submit-med', upload.none(), async (req, res) => {
         await sheets.spreadsheets.values.append({
             spreadsheetId: medSheetId,
             range: 'Sheet1!A:F',
-            valueInputOption: 'RAW',
+            valueInputOption: 'USER_ENTERED',
             resource: {
-                values: [[name, address, medicine, date, phone, imgUrl]],
+                // শিটের কলাম অনুযায়ী সঠিক সিরিয়াল: Name, Phone, Medicine, Address, Date, Prescription Url
+                values: [[name, phone, medicine, address, date, imgUrl]],
             },
         });
 
