@@ -18,21 +18,22 @@
       </div>
     </a>
     <div style="display: flex; gap: 10px;">
-      <a href="/index" class="btn btn-secondary" style="border: 1px solid #cbd5e1;">🔐 হোম</a>
+      <a href="/" class="btn btn-secondary" style="border: 1px solid #cbd5e1;">🔐 হোম</a>
       <a href="/medform" class="btn btn-primary">📝 অর্ডার দিন</a>
     </div>
   </div>
 
   <div class="container" style="max-width: 600px;">
-      <div class="medical-card">
-  <!-- ফর্মের ভেতরের হেডার লোগোসহ -->
-  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 2px solid #f0fdf4; padding-bottom: 15px;">
-    <div class="logo-badge" style="width: 40px; height: 40px; font-size: 1.3rem;">K</div>
-    <div>
-      <h2 style="color: #166534; font-size: 1.3rem; margin: 0;">ওষুধের জন্য রিকুয়েস্ট করুন</h2>
-      <small style="color: #15803d; font-weight: 600; letter-spacing: 1px;">KANIKA MEDICAL CENTER</small>
-    </div>
-  </div>
+    <div class="medical-card">
+      
+      <!-- ফর্মের ভেতরের হেডার লোগোসহ -->
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 2px solid #f0fdf4; padding-bottom: 15px;">
+        <div class="logo-badge" style="width: 40px; height: 40px; font-size: 1.3rem;">K</div>
+        <div>
+          <h2 style="color: #166534; font-size: 1.3rem; margin: 0;">ওষুধের জন্য রিকুয়েস্ট করুন</h2>
+          <small style="color: #15803d; font-weight: 600; letter-spacing: 1px;">KANIKA MEDICAL CENTER</small>
+        </div>
+      </div>
 
       <form action="/submit-med" method="POST">
         <div class="form-group">
@@ -60,15 +61,58 @@
           <input type="date" name="date" class="form-control" required>
         </div>
 
+        <!-- ইমেজ ফাইল আপলোড ফিল্ড (ImgBB ইন্টিগ্রেশন) -->
         <div class="form-group">
-          <label>প্রেসক্রিপশনের ছবি/লিঙ্ক (URL)</label>
-          <input type="url" name="imgUrl" class="form-control" placeholder="https://..." required>
+          <label>প্রেসক্রিপشن ছবি আপলোড করুন</label>
+          <input type="file" id="imageFile" class="form-control" accept="image/*" onchange="uploadImage(this)">
+          
+          <!-- হিডেন ইনপুট যা ব্যাকএণ্ডে imgUrl পাঠাবে -->
+          <input type="hidden" name="imgUrl" id="imgUrl" required>
+          
+          <!-- আপলোড স্ট্যাটাস দেখানোর জন্য -->
+          <small id="uploadStatus" style="display: block; margin-top: 5px; color: #15803d; font-weight: 600;"></small>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">অর্ডার নিশ্চিত করুন</button>
       </form>
     </div>
   </div>
+
+  <!-- ImgBB আপলোড স্ক্রিপ্ট -->
+  <script>
+    async function uploadImage(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const statusText = document.getElementById("uploadStatus");
+      statusText.innerText = "⏳ ছবি আপলোড হচ্ছে, অপেক্ষা করুন...";
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        // এখানে আপনার ImgBB API Key বসাবেন (যদি আগে অন্য পেজে ব্যবহার করে থাকেন সেটিও দিতে পারেন)
+        const response = await fetch("https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          document.getElementById("imgUrl").value = data.data.url;
+          statusText.innerHTML = "✅ ছবি সফলভাবে আপলোড হয়েছে!";
+          statusText.style.color = "#16a34a";
+        } else {
+          statusText.innerHTML = "❌ আপলোড ব্যর্থ হয়েছে, আবার চেষ্টা করুন।";
+          statusText.style.color = "#dc2626";
+        }
+      } catch (err) {
+        console.error(err);
+        statusText.innerHTML = "❌ সার্ভার ত্রুটি!";
+        statusText.style.color = "#dc2626";
+      }
+    }
+  </script>
 
 </body>
 </html>
