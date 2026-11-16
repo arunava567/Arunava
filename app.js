@@ -156,9 +156,11 @@ app.post('/update-coins', async (req, res) => {
 });
 // ================= MEDICINE FORM =================
 app.post('/submit-med', upload.none(), async (req, res) => {
+    console.log("Received Form Data:", req.body); // ডিবাগ করার জন্য টার্মিনালে ডেটা প্রিন্ট হবে
     const { name, phone, medicine, address, date, imgUrl } = req.body;
 
     if (!name || !phone || !medicine || !address || !date || !imgUrl) {
+        console.log("Missing fields:", { name, phone, medicine, address, date, imgUrl });
         return res.status(400).send("❌ সব তথ্য এবং প্রেসক্রিপশনের ছবি দিন।");
     }
 
@@ -171,15 +173,14 @@ app.post('/submit-med', upload.none(), async (req, res) => {
             range: 'Sheet1!A:F',
             valueInputOption: 'USER_ENTERED',
             resource: {
-                // শিটের কলাম অনুযায়ী সঠিক সিরিয়াল: Name, Phone, Medicine, Address, Date, Prescription Url
                 values: [[name, phone, medicine, address, date, imgUrl]],
             },
         });
 
         res.send("✅ ফর্ম সফলভাবে জমা হয়েছে!");
     } catch (error) {
-        console.error('Submit Error:', error);
-        res.status(500).send("❌ ডেটা জমা ব্যর্থ হয়েছে।");
+        console.error('Submit Error Details:', error); // রেন্ডার লগ-এ আসল এরর দেখাবে
+        res.status(500).send("❌ ডেটা জমা ব্যর্থ হয়েছে। এরর: " + error.message);
     }
 });
 // ================= GET USER DATA (IMG + COINS) =================
