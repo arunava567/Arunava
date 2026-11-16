@@ -26,7 +26,7 @@ const auth = new google.auth.GoogleAuth({
 
 // Sheet IDs
 const signupSheetId = '1edTcNkgZLANY48PbYv_cAeatflc6OXpfZpaCzGDGwLA';
-const medSheetId = '1FEq38P8yoq-Y4DUHk_yWGLKj4iiRxQow5PvmclwOjm4';
+const medSheetId = '1FEq38P8yoq-Y4DUHk_yWGLKj4iIRxQow5PvmcLwOjm4';
 
 // ================= ROUTES =================
 
