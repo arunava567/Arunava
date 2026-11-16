@@ -79,6 +79,7 @@
   </div>
 
   <!-- ImgBB আপলোড স্ক্রিপ্ট -->
+ <!-- ImgBB আপলোড স্ক্রিপ্ট -->
   <script>
     async function uploadImage(input) {
       const file = input.files[0];
@@ -91,28 +92,34 @@
       formData.append("image", file);
 
       try {
-        // এখানে আপনার ImgBB API Key বসাবেন (যদি আগে অন্য পেজে ব্যবহার করে থাকেন সেটিও দিতে পারেন)
         const response = await fetch("https://api.imgbb.com/1/upload?key=e3e5efef585f765316a9976dff6f7879", {
           method: "POST",
           body: formData
         });
 
-        const data = await response.json();
+        const textResponse = await response.text();
+        let data;
+        try {
+          data = JSON.parse(textResponse);
+        } catch (e) {
+          console.error("Non-JSON Response:", textResponse);
+          throw new Error("সার্ভার থেকে সঠিক JSON রেসপন্স পাওয়া যায়নি।");
+        }
+
         if (data.success) {
           document.getElementById("imgUrl").value = data.data.url;
           statusText.innerHTML = "✅ ছবি সফলভাবে আপলোড হয়েছে!";
           statusText.style.color = "#16a34a";
         } else {
-          statusText.innerHTML = "❌ আপলোড ব্যর্থ হয়েছে, আবার চেষ্টা করুন।";
+          statusText.innerHTML = "❌ আপলোড ব্যর্থ হয়েছে: " + (data.error?.message || "আবার চেষ্টা করুন।");
           statusText.style.color = "#dc2626";
         }
       } catch (err) {
         console.error(err);
-        statusText.innerHTML = "❌ সার্ভার ত্রুটি!";
+        statusText.innerHTML = "❌ সার্ভার ত্রুটি! কনসোল চেক করুন।";
         statusText.style.color = "#dc2626";
       }
     }
   </script>
-
 </body>
 </html>
